@@ -10,7 +10,7 @@ That said, you've probably written a function in Rust that used a reference
 so then? There are some common patterns in Rust that make it obvious to
 the compiler what the lifetimes should be, so you can omit ("elide") them. Let's explore some of them.
 
-## Example 1: No Output References
+## Example 1: No output references
 
 ``` rust
 fn add(a: &i32, b: &i32) -> i32 {
@@ -68,7 +68,7 @@ The two rules that we'll learn in this chapter are:
 
 Let's see how these rules affect the above two examples and then re-examine an example from the last chapter.
 
-## Example 1: No Output References
+## Example 1: No output references
 
 We had:
 
@@ -140,7 +140,7 @@ fn identity<'elided1>(a: &'elided1 i32) -> &'elided1 i32 {
 This now makes sense: the only possible way you could return a `&i32` is if you got it from a parameter,
 so the input and output must share a lifetime.
 
-## Example 3: The Limits of Elision
+## Example 3: The limits of elision
 
 Now let's have another look at this example from the last chapter:
 
@@ -172,7 +172,7 @@ elide the output lifetime only if we have exactly one input lifetime, but here w
 Rust considers it an error to elide lifetimes here -- the user has to give more
 information!
 
-## Exercise: Apply These Rules
+## Exercise: Apply these rules
 
 In this exercise, there are four functions that are missing some lifetime annotations.
 Your task is to follow the lifetime elision rules manually and give these

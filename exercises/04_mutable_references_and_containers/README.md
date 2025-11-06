@@ -206,7 +206,7 @@ fn main() {
 }
 ```
 
-## Exercise Part 1: The Other Error
+## Exercise part 1: The other error
 
 First, let's look at the other error we got in the last section:
 
@@ -227,6 +227,6 @@ error[E0502]: cannot borrow `my_vec` as immutable because it is also borrowed as
 
 Can you explain why this error occurs? Write it out in 50 words or less.
 
-## Exercise Part 2: Writing Our Own
+## Exercise part 2: Writing our own
 
 Add appropriate lifetimes to the function in the exercise.

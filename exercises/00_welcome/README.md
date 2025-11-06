@@ -53,7 +53,7 @@ Rust is powerful because it gives you the convenience of knowing at run-time
 that you will never access freed memory, but the price you pay for this convenience is
 that you must convince the compiler that you've correctly used references.
 
-## An Example of an Unconvinced Compiler
+## An example of an unconvinced compiler
 
 You've undoubtedly seen errors like this before:
 
@@ -124,7 +124,7 @@ needs the programmer to explicitly specify them. This book will help you
 improve at writing explicit lifetimes (things like `&'a str`). And that starts
 with the next chapter!
 
-## Exercise: Complete the Rustlings Exercises on Lifetimes
+## Exercise: Complete the Rustlings exercises on lifetimes
 
 If you aren't sure you understand the above, before reading on,
 [complete the rustlings exercises about lifetimes](https://github.com/rust-lang/rustlings/tree/main/exercises/16_lifetimes).
