@@ -28,7 +28,6 @@ function, and after the function, they can live for as long or as short as they 
 
 ## Example 2: Only one reference in the input
 
-
 ``` rust
 fn identity(a: &i32) -> &i32 {
     a
@@ -50,7 +49,7 @@ For this reason, if you have only one reference in your parameters, the only ref
 could return is that one, so the lifetime of your parameter has to be the same as
 the lifetime of the reference you return.
 
-[1]: Actually, it is possible with static types like string literals, but we'll cover those later.
+[1]: Actually, it *is* possible with static types like string literals, but we'll cover those later.
 
 # What to do
 
@@ -139,7 +138,7 @@ fn identity<'elided1>(a: &'elided1 i32) -> &'elided1 i32 {
 ```
 
 This now makes sense: the only possible way you could return a `&i32` is if you got it from a parameter,
-and we can see that the input and output must share a lifetime.
+so the input and output must share a lifetime.
 
 ## Example 3: The Limits of Elision
 
