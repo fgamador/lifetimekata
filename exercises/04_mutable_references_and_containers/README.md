@@ -45,7 +45,7 @@ fn insert_value<'vec_lifetime, 'contents_lifetime>(my_vec: &'vec_lifetime mut Ve
     my_vec.push(value)
 }
 
-fn main(){
+fn main() {
     let mut my_vec = vec![];
     let val1 = 1;
     let val2 = 2;
@@ -76,7 +76,7 @@ fn insert_value<'one_lifetime>(my_vec: &'one_lifetime mut Vec<&'one_lifetime i32
     my_vec.push(value)
 }
 
-fn main(){
+fn main() {
     let mut my_vec: Vec<&i32> = vec![];
     let val1 = 1;
     let val2 = 2;
@@ -115,7 +115,7 @@ fn insert_value<'one_lifetime>(my_vec: &'one_lifetime mut Vec<&'one_lifetime i32
     my_vec.push(value)
 }
 
-fn main(){
+fn main() {
     let mut my_vec: Vec<&i32> = vec![];
     let val1 = 1;
     let val2 = 2;
@@ -134,7 +134,7 @@ fn insert_value<'one_lifetime>(my_vec: &'one_lifetime mut Vec<&'one_lifetime i32
     my_vec.push(value)
 }
 
-fn main(){
+fn main() {
     let mut my_vec: Vec<&i32> = vec![];
     let val1 = 1;
     let val2 = 2;
@@ -153,11 +153,11 @@ It sees that if it lets `&mut my_vec` live as long as `&val1`, it will
 have that single region of code:
 
 ``` rust,ignore
-# fn insert_value<'one_lifetime>(my_vec: &'one_lifetime mut Vec<&'one_lifetime i32>, value: &'one_lifetime i32) {
-#     my_vec.push(value)
-# }
-# 
-# fn main(){
+fn insert_value<'one_lifetime>(my_vec: &'one_lifetime mut Vec<&'one_lifetime i32>, value: &'one_lifetime i32) {
+    my_vec.push(value)
+}
+
+fn main() {
     let mut my_vec: Vec<&i32> = vec![];
     let val1 = 1;
     let val2 = 2;
@@ -166,7 +166,7 @@ have that single region of code:
     insert_value(&mut my_vec, &val2); // | - 'one_lifetime must be this region of code.
                                       // |
     println!("{my_vec:?}");           // /
-# }
+}
 ```
 
 And that's fine. But now the compiler gets to the next line, and it sees you're
@@ -176,7 +176,6 @@ The compiler already decided `&mut my_vec` has to exist until the end of the fun
 So now, you're asking it to create *two* mutable references... and that's not allowed.
 
 So the compiler throws an error -- you're not allowed to borrow `&mut my_vec` again.
-
 
 ## Why does having two lifetimes fix this error?
 
@@ -195,7 +194,7 @@ fn insert_value<'vec_lifetime, 'contents_lifetime>(my_vec: &'vec_lifetime mut Ve
     my_vec.push(value)
 }
 
-fn main(){
+fn main() {
     let mut my_vec: Vec<&i32> = vec![];
     let val1 = 1;
     let val2 = 2;
