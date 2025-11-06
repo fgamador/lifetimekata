@@ -39,7 +39,7 @@ fn main() {
 }
 ```
 
-It's important to note that it isn't possible[1] to create a reference and pass it out of a
+It's important to note that it isn't possible\* to create a reference and pass it out of a
 function if it wasn't given to you. This is because a reference must refer
 to something you own, but everything you own is dropped at the end of your function.
 Therefore, nothing you own can be referenced after the function ends, and the only reference you can return
@@ -49,7 +49,7 @@ For this reason, if you have only one reference in your parameters, the only ref
 could return is that one, so the lifetime of your parameter has to be the same as
 the lifetime of the reference you return.
 
-[1]: Actually, it *is* possible with static types like string literals, but we'll cover those later.
+\*Actually, it *is* possible with static types like string literals, but we'll cover those later.
 
 # What to do
 
