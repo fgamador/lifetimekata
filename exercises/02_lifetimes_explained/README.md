@@ -21,10 +21,10 @@ fn some_if_greater<'lifetime1, 'lifetime2>(number: &'lifetime1 i32, greater_than
     }
 }
 
-// fn main() {
-//     let (n, gt) = (7, 4);
-//     let test = some_if_greater(&n, &gt);
-// }
+fn main() {
+    let (n, gt) = (7, 4);
+    let test = some_if_greater(&n, &gt);
+}
 ```
 
 Let's walk through what this does:

@@ -17,9 +17,9 @@ fn add(a: &i32, b: &i32) -> i32 {
     *a + *b
 }
 
-// fn main() {
-//     assert_eq!(add(&3, &4), 7);
-// }
+fn main() {
+    assert_eq!(add(&3, &4), 7);
+}
 ```
 
 The lifetimes of `a` and `b` in this function don't need to relate to each other. Assuming there's only one thread,
@@ -33,10 +33,10 @@ fn identity(a: &i32) -> &i32 {
     a
 }
 
-// fn main() {
-//     let x = 52;
-//     assert_eq!(&x, identity(&x));
-// }
+fn main() {
+    let x = 52;
+    assert_eq!(&x, identity(&x));
+}
 ```
 
 It's important to note that it isn't possible[1] to create a reference and pass it out of a
@@ -85,9 +85,9 @@ fn add<'elided1, 'elided2>(a: &'elided1 i32, b: &'elided2 i32) -> i32 {
     *a + *b
 }
 
-// fn main() {
-//     assert_eq!(add(&3, &4), 7);
-// }
+fn main() {
+    assert_eq!(add(&3, &4), 7);
+}
 ```
 
 There are no output lifetimes, so we are done.
@@ -104,10 +104,10 @@ fn identity(a: &i32) -> &i32 {
     a
 }
 
-// fn main() {
-//    let x = 52;
-//     assert_eq!(&x, identity(&x));
-// }
+fn main() {
+   let x = 52;
+   assert_eq!(&x, identity(&x));
+}
 ```
 
 There is only one input lifetime (needed for the type of `a`):
@@ -117,10 +117,10 @@ fn identity<'elided1>(a: &'elided1 i32) -> &i32 {
     a
 }
 
-// fn main() {
-//     let x = 52;
-//     assert_eq!(&x, identity(&x));
-// }
+fn main() {
+    let x = 52;
+    assert_eq!(&x, identity(&x));
+}
 ```
 
 There is only one output lifetime, and all the input lifetimes share the same lifetime (`'elided1`),
@@ -131,10 +131,10 @@ fn identity<'elided1>(a: &'elided1 i32) -> &'elided1 i32 {
     a
 }
 
-// fn main() {
-//     let x = 52;
-//     assert_eq!(&x, identity(&x));
-// }
+fn main() {
+    let x = 52;
+    assert_eq!(&x, identity(&x));
+}
 ```
 
 This now makes sense: the only possible way you could return a `&i32` is if you got it from a parameter,
