@@ -9,14 +9,14 @@ iterate over a sentence. You might start off with something like this:
 ``` rust,ignore
 // First, the struct:
 
-/// This struct keeps track of where we're up to in the string.
+/// This struct keeps track of where we are in the string.
 struct WordIterator<'s> {
     position: usize,
     string: &'s str
 }
 
 impl WordIterator {
-    /// Creates a new WordIterator based on a string.
+    /// Creates a new WordIterator for a string.
     fn new(string: &str) -> WordIterator {
         WordIterator {
             position: 0,
@@ -24,7 +24,7 @@ impl WordIterator {
         }
     }
 
-    /// Gives the next word. `None` if there aren't any words left.
+    /// Gives the next word, or `None` if there aren't any words left.
     fn next_word(&mut self) -> Option<&str> {
         let start_of_word = &self.string[self.position..];
         let index_of_next_space = start_of_word.find(' ').unwrap_or(start_of_word.len());
@@ -47,7 +47,7 @@ fn main() {
 ```
 
 When defining our `WordIterator` struct, we said it requires a lifetime to be specified.
-But when we then wrote the impl block, we didn't specify one. Rust requires that we do this.
+But when we wrote the impl block, we didn't specify one. Rust requires that we do so.
 
 The way we do this is by telling Rust about a lifetime, and then putting that lifetime onto
 our struct. Let's see how we do that:
@@ -58,22 +58,21 @@ impl<'lifetime> for WordIterator<'lifetime> {
 }
 ```
 
-It's useful to note that we've done this in two parts -- `impl<'lifetime>` defines a lifetime `'lifetime`.
-It doesn't make any promises about what that lifetime is, it just says it exists.
-`WordIterator<'lifetime>` then uses the lifetime we created, and says "the references in `WordIterator` must live for `lifetime`".
+Note that we've done this in two parts -- first, `impl<'lifetime>` defines a lifetime `'lifetime`.
+It doesn't make any promises about what that lifetime is, it just says that it exists. This allows us to use that lifetime within the impl block.
 
-Now, anywhere in the impl block, we can choose to use that lifetime. Any reference we annotate with `'lifetime'`
+Next, `WordIterator<'lifetime>` uses the lifetime to say that "the references in `WordIterator` must live for `lifetime`". And in the rest of the impl block, any reference we annotate with `'lifetime'`
 must have the same lifetime as any other reference annotated with `'lifetime'`.
 
 ``` rust,ignore
-/// This struct keeps track of where we're up to in the string.
+/// This struct keeps track of where we are in the string.
 struct WordIterator<'s> {
     position: usize,
     string: &'s str
 }
 
 impl<'lifetime> WordIterator<'lifetime> {
-    /// Creates a new WordIterator based on a string.
+    /// Creates a new WordIterator for a string.
     fn new(string: &'lifetime str) -> WordIterator<'lifetime> {
         WordIterator {
             position: 0,
@@ -81,7 +80,7 @@ impl<'lifetime> WordIterator<'lifetime> {
         }
     }
 
-    /// Gives the next word. `None` if there aren't any words left.
+    /// Gives the next word, or `None` if there aren't any words left.
     fn next_word(&mut self) -> Option<&str> {
         let start_of_word = &self.string[self.position..];
         let index_of_next_space = start_of_word.find(' ').unwrap_or(start_of_word.len());
@@ -117,9 +116,9 @@ Now that we've seen `impl` blocks that have lifetimes, let's discuss one more:
 
 This means that even if you take in many references in your arguments, Rust will assume that any references you return come from `self`, not from any of the other references.
 
-# Exercise
+## Exercise
 
-In the following code, we annotate the function using the `'borrow` lifetime, not only the `'lifetime` lifetime.
+In the following code, we annotate the function using the `'borrow` lifetime in addition to the `'lifetime` lifetime.
 The `'borrow` lifetime exists only inside this function, and affects only the borrows of its arguments and return
 value. The `'lifetime` value, as we saw before, also constrains the lifetime of the string inside the struct.
 
@@ -133,7 +132,7 @@ Specifically:
 
 ### Example 1
 ``` rust,ignore
-    /// Gives the next word. `None` if there aren't any words left.
+    /// Gives the next word, or `None` if there aren't any words left.
     /// This compiles. It's the exact same as Example 4.
     /// This function is problematic because the next word lives as long
     /// as your borrow of the iterator. In order to get the next word, you
@@ -145,7 +144,7 @@ Specifically:
 
 ### Example 2
 ``` rust,ignore
-    /// Gives the next word. `None` if there aren't any words left.
+    /// Gives the next word, or `None` if there aren't any words left.
     /// This compiles. It's the exact same as Example 3.
     fn next_word<'borrow>(&'borrow mut self) -> Option<&'lifetime str> {
         // ...
@@ -154,7 +153,7 @@ Specifically:
 
 ### Example 3
 ``` rust,ignore
-    /// Gives the next word. `None` if there aren't any words left.
+    /// Gives the next word, or `None` if there aren't any words left.
     /// This compiles. It's probably the "most" correct, because it's the shortest
     /// to write, but also ensures you can retain the returned strings, even if
     /// you call this function multiple times.
@@ -165,7 +164,7 @@ Specifically:
 
 ### Example 4
 ``` rust,ignore
-    /// Gives the next word. `None` if there aren't any words left.
+    /// Gives the next word, or `None` if there aren't any words left.
     /// This compiles. If expanded, it would be the same as Example 1.
     fn next_word(&mut self) -> Option<&str> {
         // ...
