@@ -106,7 +106,7 @@ fn main() {
 
 We previously discussed two rules for lifetime elision. They are:
 
-1. Each place that an input lifetime is omitted (elided) is given its own lifetime.
+1. Each place where an input lifetime is omitted (elided) is given its own lifetime.
 2. If there's exactly one lifetime across all the input references, that lifetime is assigned to *every* output reference.
 
 Now that we've seen `impl` blocks that have lifetimes, let's discuss one more:
