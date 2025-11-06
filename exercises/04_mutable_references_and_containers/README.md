@@ -1,6 +1,6 @@
 # Mutable References and Containers
 
-Mutable References work exactly the same way as regular references, with regards
+Mutable references work in exactly the same way as regular references, with regards
 to lifetime elision. The reason we have a chapter about them, however, is that if
 you have a mutable reference, you might need to tell the compiler about lifetimes
 even without a return value.
@@ -13,10 +13,10 @@ fn insert_value(my_vec: &mut Vec<&i32>, value: &i32) {
 }
 ```
 
-We're not returning anything; so lifetimes don't matter, right?
+We're not returning anything, so lifetimes don't matter, right?
 
 Unfortunately, lifetimes are still important. The reference `value` actually needs to
-live for the same time as the contents of the vector. If they didn't,
+live for the same time as the contents of the vector. If it didn't,
 the vector might contain an invalid reference. For example, what would happen
 in this scenario?
 
@@ -44,6 +44,7 @@ We can use lifetimes to ensure that the two references live for the same amount 
 fn insert_value<'vec_lifetime, 'contents_lifetime>(my_vec: &'vec_lifetime mut Vec<&'contents_lifetime i32>, value: &'contents_lifetime i32) {
     my_vec.push(value)
 }
+
 fn main(){
     let mut my_vec = vec![];
     let val1 = 1;
@@ -62,7 +63,7 @@ This signature indicates that there are two lifetimes:
    for a certain period of time.
  - `'contents_lifetime`: The contents of the vector need to live for a certain
    period of time. Importantly, the new `value` we're inserting needs to live
-   for just as long as the contents of the vector. If they didn't, you would
+   for just as long as the contents of the vector. If it didn't, you would
    end up with a vector that contains an invalid reference.
 
 ## Do We Even Need Two Lifetimes?
@@ -105,16 +106,16 @@ error[E0499]: cannot borrow `my_vec` as mutable more than once at a time
 
 This seems strange -- why can't you borrow `my_vec`?
 
-Well, let's walk through what the compiler sees:
+Well, let's walk through what the compiler sees.
 
 `&val` needs to last for as long as `my_vec` exists:
 
 ``` rust,ignore
-# fn insert_value<'one_lifetime>(my_vec: &'one_lifetime mut Vec<&'one_lifetime i32>, value: &'one_lifetime i32) {
-#     my_vec.push(value)
-# }
-# 
-# fn main(){
+fn insert_value<'one_lifetime>(my_vec: &'one_lifetime mut Vec<&'one_lifetime i32>, value: &'one_lifetime i32) {
+    my_vec.push(value)
+}
+
+fn main(){
     let mut my_vec: Vec<&i32> = vec![];
     let val1 = 1;
     let val2 = 2;
@@ -123,32 +124,32 @@ Well, let's walk through what the compiler sees:
     insert_value(&mut my_vec, &val2); // | - &val1 needs to last this long.
                                       // |
     println!("{my_vec:?}");           // /
-# }
+}
 ```
 
-Whereas `&mut my_vec` only needs to last for the duration of `insert_value`.
+Whereas `&mut my_vec` needs to last only for the duration of `insert_value`:
 
 ``` rust,ignore
-# fn insert_value<'one_lifetime>(my_vec: &'one_lifetime mut Vec<&'one_lifetime i32>, value: &'one_lifetime i32) {
-#     my_vec.push(value)
-# }
-# 
-# fn main(){
+fn insert_value<'one_lifetime>(my_vec: &'one_lifetime mut Vec<&'one_lifetime i32>, value: &'one_lifetime i32) {
+    my_vec.push(value)
+}
+
+fn main(){
     let mut my_vec: Vec<&i32> = vec![];
     let val1 = 1;
     let val2 = 2;
     
-    insert_value(&mut my_vec, &val1); // <- &mut my_vec only needs to last this long.
+    insert_value(&mut my_vec, &val1); // <- &mut my_vec needs to last only this long.
     insert_value(&mut my_vec, &val2); 
     
     println!("{my_vec:?}");
-# }
+}
 ```
 
 But, we've told the compiler that it needs the borrows of both `&val1` and
 `&mut my_vec` to share the same lifetime. So the compiler extends the borrow
-of `&mut my_vec` to ensure they do share a lifetime:
-It sees that if it let `&mut my_vec` live as long as `&val1`, it would
+of `&mut my_vec` to ensure that they do share a lifetime.
+It sees that if it lets `&mut my_vec` live as long as `&val1`, it will
 have that single region of code:
 
 ``` rust,ignore
@@ -182,8 +183,8 @@ So the compiler throws an error -- you're not allowed to borrow `&mut my_vec` ag
 Have a think before reading this section -- why does having two lifetimes
 solve this bug?
 
-Before, the compiler had to decide that `&mut my_vec` and `&val1` shared a lifetime.
-In other words, that they lived as long as each-other.
+Before, the compiler had to decide that `&mut my_vec` and `&val1` share a lifetime.
+In other words, that they live as long as each other.
 
 By using two lifetimes, we've told the compiler that `&mut my_vec` and `&val1`
 don't necessarily have to live for the same amount of time. And so,
