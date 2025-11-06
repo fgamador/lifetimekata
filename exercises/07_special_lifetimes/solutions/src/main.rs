@@ -19,7 +19,7 @@ impl UniqueWords {
         }
     }
 
-    fn get_sorted_words(&'_ self) -> Vec<&'_ str> {
+    fn get_sorted_words(&self) -> Vec<&'_ str> {
         let mut unique_words = self.unique_words.clone();
         unique_words.sort();
         unique_words
