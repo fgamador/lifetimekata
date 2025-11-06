@@ -164,7 +164,7 @@ Specifically:
 
 ### Answers
 
-- Example 1: This compiles. It's the exact same as Example 4. This function is problematic because the next word lives as long as your borrow of the iterator. In order to get the next word, you must drop all references to the current one.
-- Example 2: This compiles. It's the exact same as Example 3.
-- Example 3: This compiles. It's probably the "most" correct, because it's the shortest to write, but also ensures you can retain the returned strings, even if you call this function multiple times.
+- Example 1: This compiles. It's equivalent to Example 4. This version is problematic because it extends the lifetime of the mutable borrow of the iterator to match the lifetime of the returned word. Calling the function again to get the next word creates another mutable borrow, so you cannnot do so until you first drop the current word.
+- Example 2: This compiles. It's equivalent to Example 3.
+- Example 3: This compiles. It's probably the "most correct", because it's the shortest version that ensures you can retain the returned strings, even if you call this function multiple times.
 - Example 4: This compiles. If expanded, it would be the same as Example 1.
