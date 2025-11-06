@@ -5,10 +5,10 @@ There are two special lifetimes in Rust. It's worth discussing them both:
  - `'static`
  - `'_` (the implicit lifetime)
 
-# The `static` lifetime
+## The `'static` lifetime
 
 Some things in your program are guaranteed to last forever. The most common reason for this
-is when they're information bundled inside your binary. For example, when you write
+is when they're literal data bundled inside your binary. For example, when you write
 a program like this:
 
 ``` rust
@@ -26,7 +26,6 @@ Therefore, if we were to talk about the type of the text, we'd say it's a `&'sta
 Similarly, any references to a constant can also be `&'static`. For example:
 
 ``` rust
-
 const SOME_COORDINATE: (i32, i32) = (7, 4);
 
 fn main() {
@@ -34,18 +33,18 @@ fn main() {
 }
 ```
 
-# The `'_` lifetime (Anonymous Lifetimes, Placeholder Lifetimes)
+## The `'_` lifetime (anonymous lifetimes, placeholder lifetimes)
 
 The implicit lifetime tells Rust to figure out the lifetime
 itself. There are three places where this lifetime is useful:
 
  - To simplify `impl` blocks
- - When consuming/returning a type that needs a lifetime
- - To write trait objects that contain references.
+ - When consuming or returning a type that needs a lifetime
+ - To write trait objects that contain references
 
-## Simplifying Impl Blocks
+### Simplifying Impl Blocks
 
-Say you're implementing a counter struct, that looks like this:
+Say you're implementing a counter struct that wraps an external integer:
 
 ``` rust
 struct Counter<'a> {
@@ -69,7 +68,7 @@ fn main() {
 }
 ```
 
-That's fine, but you'll notice that the `impl` block doesn't actually use the `'a` lifetime anywhere.
+This compiles, but you'll notice that the `impl` block doesn't actually use the `'a` lifetime anywhere.
 Therefore, we can simplify things by writing the following instead:
 
 ``` rust,ignore
@@ -82,13 +81,12 @@ impl Counter<'_> {
 
 The two `impl` blocks above mean the same thing, but just take slightly fewer arguments.
 
-## Returning Structs and Enums
+### Returning structs and enums
 
-This is recommended for the situation where you are returning a
-struct/enum that contains a reference. You could write something like this:
+This is recommended when you are returning a
+struct or enum that contains a reference. You could write something like this:
 
 ``` rust
-
 struct StrWrap<'a>(&'a str);
 
 fn make_wrapper(string: &str) -> StrWrap {
@@ -98,8 +96,8 @@ fn make_wrapper(string: &str) -> StrWrap {
 # fn main() {}
 ```
 
-But that syntax is no longer recommended, as you will see when you add the
-`#![deny(rust_2018_idioms)]` annotation, where you get the error:
+But that syntax is no longer recommended, as you will see if you add the
+`#![deny(rust_2018_idioms)]` annotation, which produces this error:
 
 ```text
 error: hidden lifetime parameters in types are deprecated
@@ -123,16 +121,16 @@ _ | fn make_wrapper(string: &str) -> StrWrap<'_> {
 By following the hint, it becomes clearer that `StrWrap` *does* contain a reference,
 but that the compiler should just figure it out.
 
-## Lifetimes on Trait Objects
+## Lifetimes on trait objects
 
 See [Chapter 10: Footnote on Trait Lifetime Bounds](./chapter_10.md) for the gory details.
 
-# Lifetime Bounds
+## Lifetime bounds
 
 Lifetime bounds are not widely used, so we don't devote a large section of these exercises to them.
 You can probably skip this section unless you really want to know the details.
 
-In short, they allow you to specify that one lifetime should outlive another. To specify one, use a where clause, such as 
+Briefly, they allow you to specify that one lifetime should outlive another. To do so, use a `where` clause, such as 
 `where 'a: 'b`.
 
 To quote the Rust Reference: 
@@ -151,18 +149,17 @@ To quote the Rust Reference:
 > `T: 'a` means that all lifetime parameters of `T` outlive `'a`.
 > For example, if `'a` is an unconstrained lifetime parameter, then `i32: 'static` and `&'static str: 'a` are satisfied, but `Vec<&'a ()>: 'static` is not.
 
+## Exercise
 
-# Exercise
-
-You have been given code which contains many uses of the lifetimes `'a` and `'b'`.
+You have been given code that contains many uses of the lifetimes `'a` and `'b'`.
 All of these lifetimes can be replaced with either `'_` or `'static`.
 
-Your task is to replace every occurance of the lifetimes `'a` and `'b` with either
+Your task is to replace every occurrence of the lifetimes `'a` and `'b` with either
 `'_` or `'static`, to remove excessive lifetime declarations, and to ensure your 
 code still compiles.
 
-### Footnote on Out of Date Information
+## Footnote on out-of-date information
  
 The Rust Edition Guide previously contained a section
 about anonymous lifetimes. The most popular google result
-is now [this article](https://yegeun542.github.io/rust-edition-guide-ko/rust-2018/ownership-and-lifetimes/the-anonymous-lifetime.html) but I recommend disregarding it, as it is out of date information.
+is now [this article](https://yegeun542.github.io/rust-edition-guide-ko/rust-2018/ownership-and-lifetimes/the-anonymous-lifetime.html) but I recommend disregarding it, as it is out-of-date information.
