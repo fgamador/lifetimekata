@@ -27,7 +27,7 @@ fn split<'text, 'delim>(text: &'text str, delimiter: &'delim str) -> Option<Spli
     })
 }
 
-# fn main() {}
+fn main() {}
 ```
 
 And we're done! Right?

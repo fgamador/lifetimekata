@@ -3,8 +3,8 @@
 When structs or enums have lifetimes on them, the way that `impl` blocks
 work also changes slightly.
 
-For example, say we want to create a struct which lets the user
-iterate over a sentence. You might start off something like this:
+For example, say we want to create a struct that lets the user
+iterate over a sentence. You might start off with something like this:
 
 ``` rust,ignore
 // First, the struct:
@@ -23,7 +23,7 @@ impl WordIterator {
             string
         }
     }
-    
+
     /// Gives the next word. `None` if there aren't any words left.
     fn next_word(&mut self) -> Option<&str> {
         let start_of_word = &self.string[self.position..];
@@ -40,10 +40,9 @@ impl WordIterator {
 fn main() {
     let text = String::from("Twas brillig, and the slithy toves // Did gyre and gimble in the wabe: // All mimsy were the borogoves, // And the mome raths outgrabe. ");
     let mut word_iterator = WordIterator::new(&text);
-    
+
     assert_eq!(word_iterator.next_word(), Some("Twas"));
     assert_eq!(word_iterator.next_word(), Some("brillig,"));
-    
 }
 ```
 
@@ -67,11 +66,11 @@ Now, anywhere in the impl block, we can choose to use that lifetime. Any referen
 must have the same lifetime as any other reference annotated with `'lifetime'`.
 
 ``` rust,ignore
-# /// This struct keeps track of where we're up to in the string.
-# struct WordIterator<'s> {
-#     position: usize,
-#     string: &'s str
-# }
+/// This struct keeps track of where we're up to in the string.
+struct WordIterator<'s> {
+    position: usize,
+    string: &'s str
+}
 
 impl<'lifetime> WordIterator<'lifetime> {
     /// Creates a new WordIterator based on a string.
@@ -81,7 +80,7 @@ impl<'lifetime> WordIterator<'lifetime> {
             string
         }
     }
-    
+
     /// Gives the next word. `None` if there aren't any words left.
     fn next_word(&mut self) -> Option<&str> {
         let start_of_word = &self.string[self.position..];
@@ -95,36 +94,33 @@ impl<'lifetime> WordIterator<'lifetime> {
     }
 }
 
-# fn main() {
-#     let text = String::from("Twas brillig, and the slithy toves // Did gyre and gimble in the wabe: // All mimsy were the borogoves, // And the mome raths outgrabe. ");
-#     let mut word_iterator = WordIterator::new(&text);
-#     
-#     assert_eq!(word_iterator.next_word(), Some("Twas"));
-#     assert_eq!(word_iterator.next_word(), Some("brillig,"));
-#     
-# }
+fn main() {
+    let text = String::from("Twas brillig, and the slithy toves // Did gyre and gimble in the wabe: // All mimsy were the borogoves, // And the mome raths outgrabe. ");
+    let mut word_iterator = WordIterator::new(&text);
 
+    assert_eq!(word_iterator.next_word(), Some("Twas"));
+    assert_eq!(word_iterator.next_word(), Some("brillig,"));
+}
 ```
 
-## Lifetime Elision, Redux
+## Lifetime elision, redux
 
 We previously discussed two rules for lifetime elision. They are:
 
-1. Each place that an input lifetime is left out (a.k.a 'elided') is filled in with its own lifetime.
-2. If there's exactly one lifetime on all the input references, that lifetime is assigned to *every* output lifetime.
+1. Each place that an input lifetime is omitted (elided) is given its own lifetime.
+2. If there's exactly one lifetime across all the input references, that lifetime is assigned to *every* output reference.
 
 Now that we've seen `impl` blocks that have lifetimes, let's discuss one more:
 
-3. If there are multiple input lifetime positions, but one of them is `&self` or
+3. If there are multiple input references, but one of them is `&self` or
    `&mut self`, the lifetime of the borrow of `self` is assigned to all elided output lifetimes.
-   
-This means that even if you take in many references in your arguments, Rust will assume that any references you return
-come from `self`, not any of those other references.
+
+This means that even if you take in many references in your arguments, Rust will assume that any references you return come from `self`, not from any of the other references.
 
 # Exercise
 
 In the following code, we annotate the function using the `'borrow` lifetime, not only the `'lifetime` lifetime.
-The `'borrow` lifetime only exists inside this function, and only affects the borrows of its arguments and return
+The `'borrow` lifetime exists only inside this function, and affects only the borrows of its arguments and return
 value. The `'lifetime` value, as we saw before, also constrains the lifetime of the string inside the struct.
 
 There are four ways we could implement this code. Describe the effect of each of these implementations.
@@ -133,15 +129,15 @@ Specifically:
  - Do they compile?
  - Are any of them identical to another one?
  - Are there any circumstances where their lifetimes are not general enough?
- - Which would be the "most" correct to write?
+ - Which would be the "most correct" to write?
 
 ### Example 1
 ``` rust,ignore
     /// Gives the next word. `None` if there aren't any words left.
-#    /// This compiles. It's the exact same as Example 4.
-#    /// This function is problematic because the next word lives as long
-#    /// as your borrow of the iterator. In order to get the next word, you
-#    /// must drop all references to the current one.
+    /// This compiles. It's the exact same as Example 4.
+    /// This function is problematic because the next word lives as long
+    /// as your borrow of the iterator. In order to get the next word, you
+    /// must drop all references to the current one.
     fn next_word<'borrow>(&'borrow mut self) -> Option<&'borrow str> {
         // ...
     }
@@ -150,7 +146,7 @@ Specifically:
 ### Example 2
 ``` rust,ignore
     /// Gives the next word. `None` if there aren't any words left.
-#    /// This compiles. It's the exact same as Example 3.
+    /// This compiles. It's the exact same as Example 3.
     fn next_word<'borrow>(&'borrow mut self) -> Option<&'lifetime str> {
         // ...
     }
@@ -159,9 +155,9 @@ Specifically:
 ### Example 3
 ``` rust,ignore
     /// Gives the next word. `None` if there aren't any words left.
-#    /// This compiles. It's probably the "most" correct, because it's the shortest
-#    /// to write, but also ensures you can retain the returned strings, even if
-#    /// you call this function multiple times.
+    /// This compiles. It's probably the "most" correct, because it's the shortest
+    /// to write, but also ensures you can retain the returned strings, even if
+    /// you call this function multiple times.
     fn next_word(&mut self) -> Option<&'lifetime str> {
         // ...
     }
@@ -170,7 +166,7 @@ Specifically:
 ### Example 4
 ``` rust,ignore
     /// Gives the next word. `None` if there aren't any words left.
-#    /// This compiles. If expanded, it would be the same as Example 1.
+    /// This compiles. If expanded, it would be the same as Example 1.
     fn next_word(&mut self) -> Option<&str> {
         // ...
     }
