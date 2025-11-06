@@ -66,7 +66,7 @@ This signature indicates that there are two lifetimes:
    for just as long as the contents of the vector. If it didn't, you would
    end up with a vector that contains an invalid reference.
 
-## Do We Even Need Two Lifetimes?
+## Do we even need two lifetimes?
 
 You might wonder what happens if we don't provide two lifetimes. Does just
 one lifetime work?
