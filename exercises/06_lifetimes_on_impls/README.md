@@ -122,7 +122,7 @@ In the following code, we annotate the function using the `'borrow` lifetime in 
 The `'borrow` lifetime exists only inside this function, and affects only the borrows of its arguments and return
 value. The `'lifetime` value, as we saw before, also constrains the lifetime of the string inside the struct.
 
-There are four ways we could implement this code. Describe the effect of each of these implementations.
+There are four ways we could implement this code. Describe the effect of each of these implementations. Scroll down for the answers.
 
 Specifically:
  - Do they compile?
@@ -133,10 +133,6 @@ Specifically:
 ### Example 1
 ``` rust,ignore
     /// Gives the next word, or `None` if there aren't any words left.
-    /// This compiles. It's the exact same as Example 4.
-    /// This function is problematic because the next word lives as long
-    /// as your borrow of the iterator. In order to get the next word, you
-    /// must drop all references to the current one.
     fn next_word<'borrow>(&'borrow mut self) -> Option<&'borrow str> {
         // ...
     }
@@ -145,7 +141,6 @@ Specifically:
 ### Example 2
 ``` rust,ignore
     /// Gives the next word, or `None` if there aren't any words left.
-    /// This compiles. It's the exact same as Example 3.
     fn next_word<'borrow>(&'borrow mut self) -> Option<&'lifetime str> {
         // ...
     }
@@ -154,9 +149,6 @@ Specifically:
 ### Example 3
 ``` rust,ignore
     /// Gives the next word, or `None` if there aren't any words left.
-    /// This compiles. It's probably the "most" correct, because it's the shortest
-    /// to write, but also ensures you can retain the returned strings, even if
-    /// you call this function multiple times.
     fn next_word(&mut self) -> Option<&'lifetime str> {
         // ...
     }
@@ -165,8 +157,14 @@ Specifically:
 ### Example 4
 ``` rust,ignore
     /// Gives the next word, or `None` if there aren't any words left.
-    /// This compiles. If expanded, it would be the same as Example 1.
     fn next_word(&mut self) -> Option<&str> {
         // ...
     }
 ```
+
+### Answers
+
+- Example 1: This compiles. It's the exact same as Example 4. This function is problematic because the next word lives as long as your borrow of the iterator. In order to get the next word, you must drop all references to the current one.
+- Example 2: This compiles. It's the exact same as Example 3.
+- Example 3: This compiles. It's probably the "most" correct, because it's the shortest to write, but also ensures you can retain the returned strings, even if you call this function multiple times.
+- Example 4: This compiles. If expanded, it would be the same as Example 1.
