@@ -3,8 +3,8 @@
 In chapter 7, we discussed placeholder lifetimes (`'_`). We said that
 there were three ways you could use them:
 
- - To simplify `impl` blocks
- - When consuming/returning a type that needs a lifetime
+ - To simplify `impl` blocks.
+ - When consuming/returning a type that needs a lifetime.
  - To write trait objects that contain references.
 
 In the first case, we saw that anonymous lifetimes just simplified
@@ -17,7 +17,7 @@ The one case where it looks like lifetime elision should do what we want,
 but it actually doesn't unless we use the `'_` is the case of trait objects.
 This chapter walks through how trait objects and lifetimes work together.
 
-Let's setup a simple example:
+Let's set up a simple example:
 
 ```rust
 trait Bool {
@@ -54,9 +54,9 @@ fn main() {
 }
 ```
 
-To be clear, what we are doing here is creating two structs which represent
+To be clear, what we are doing here is creating two structs that represent
 `true` and `false`. They both implement the `Bool` trait, which has
-the `truthiness` function which returns `true` or `false`.
+the `truthiness` function that returns `true` or `false`.
 
 The `get_bool` function returns a Boxed `Bool` trait object, based on whether
 `get_bool` is passed `true` or  `false`.

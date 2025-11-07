@@ -1,4 +1,4 @@
-# Further Reading in the Rust Reference
+# Further Reading about Lifetimes
 
 The best sources of information about lifetimes are the Rust Reference and
 Rustonomicon. If you require a really advanced knowledge of lifetimes to
@@ -10,12 +10,12 @@ you may find that there is a simpler alternative.
  - [The Rust Reference (In General)](https://doc.rust-lang.org/reference/)
  - [The Rustonomicon (Lifetimes)](https://doc.rust-lang.org/nomicon/lifetimes.html)
 
-# Other Useful Lifetimes Content
+## Other useful lifetimes content
 
 - [Common Rust Lifetime Misconceptions](https://github.com/pretzelhammer/rust-blog/blob/master/posts/common-rust-lifetime-misconceptions.md)
 - [Crust of Rust: Lifetime Annotations](https://www.youtube.com/watch?v=rAl-9HwD858)
 
-## Variance and Subtyping
+## Variance and subtyping
 
 This guide does not cover the topic of "variance" at all, which is how lifetimes can be substituted for
 one-another. Variance, while theoretically important, is not useful in a day-to-day understanding
@@ -23,7 +23,7 @@ of lifetimes, and so it was not included in the book.
 
 You can read more about it in [the Rustonomicon (subtyping)](https://doc.rust-lang.org/nomicon/subtyping.html).
 
-## Brain Teaser 1: Why doesn't this program work:
+## Brain teaser: Why doesn't this program work?
 
 If you're interested in working through a really difficult exercise to test
 your understanding of lifetimes and generics, the following exercise may be interesting.
